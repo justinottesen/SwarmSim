@@ -1,5 +1,14 @@
-#include <iostream>
+#include "Logger.h"
+#include "Simulator.h"
+
 
 int main() {
-    std::cout << "Hello World!" << std::endl;
+  Logger::addConsole(TRACE);
+  Logger::addFile("log/info.log");
+  Logger::addFile("log/trace.log", TRACE);
+
+  Simulator sim;
+
+  return sim.run();
+
 }
