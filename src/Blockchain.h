@@ -1,10 +1,11 @@
 #include <vector>
 
 struct Contract {
+  Contract(double price_, unsigned int deadline_)
+      : price(price_)
+      , deadline(deadline_) {}
 
-  Contract(double price_, unsigned int deadline_) : price(price_), deadline(deadline_) {}
-
-  double price;
+  double       price;
   unsigned int deadline;
 };
 

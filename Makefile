@@ -89,4 +89,8 @@ reset:
 	$(RM) -r $(OBJ)
 	$(RM) -r $(BIN)
 
+.PHONY: format
+format:
+	clang-format src/* -i
+
 -include $(DEPENDS)

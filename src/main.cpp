@@ -1,7 +1,6 @@
 #include "Logger.h"
 #include "Simulator.h"
 
-
 int main() {
   Logger::addConsole(TRACE);
   Logger::addFile("log/info.log");
@@ -10,5 +9,4 @@ int main() {
   Simulator sim;
 
   return sim.run();
-
 }
