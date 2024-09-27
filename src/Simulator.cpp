@@ -1,5 +1,6 @@
 #include "Simulator.h"
 
+#include <functional>
 #include <ranges>
 
 Simulator::Simulator(const Params& params)
@@ -14,8 +15,18 @@ Simulator::Simulator(const Params& params)
 
 void Simulator::step(unsigned int t) {
   LOG(TRACE) << "Running step " << t;
-  // Update Contracts
-  m_contractManager.step(t);
+
+  // Update contracts
+  m_contractManager.updateContracts(t);
+
+  // Workers pick up new contracts
+  for (Worker& w : m_agentManager.getWorkers()) {
+    if (w.working(t)) { continue; }
+    for (Contract& c : m_contractManager.getContracts()) {
+      if (!c.available || !w.shouldAccept(c)) { continue; }
+      w.accept(c);
+    }
+  }
 }
 
 void Simulator::run() {
