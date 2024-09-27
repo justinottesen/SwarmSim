@@ -27,6 +27,15 @@ void Simulator::step(unsigned int t) {
       w.accept(c);
     }
   }
+
+  // Adjudicators pick up new contracts
+  for (Adjudicator& a : m_agentManager.getAdjudicators()) {
+    if (a.working(t)) { continue; }
+    for (Contract& c : m_contractManager.getContracts()) {
+      if (c.open_adjudicators == 0 || !a.shouldAccept(c)) { continue; }
+      a.accept(c);
+    }
+  }
 }
 
 void Simulator::run() {

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <vector>
 #include <ranges>
-#include "Params.h"
+#include <vector>
 
 #include "Logger.h"
+#include "Params.h"
 
 struct Contract {
   unsigned int ID;
@@ -12,6 +12,7 @@ struct Contract {
   double       price;
   double       difficulty;
   unsigned int deadline;
+  unsigned int open_adjudicators;
 
   bool available = true;
 };
@@ -29,7 +30,7 @@ class ContractManager {
     if (m_createProb(m_rng)) {
       LOG(INFO) << "Creating new contract, ID: " << m_count;
       m_contracts.emplace_back(m_count++, m_priceDist(m_rng), m_difficultyDist(m_rng),
-                               t + m_params.duration);
+                               t + m_params.duration, m_params.num_adjudicators);
     }
   }
 

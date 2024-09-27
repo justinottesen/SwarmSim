@@ -30,7 +30,7 @@ class Worker : public Agent {
       , m_ability(ability) {}
 
   bool shouldAccept(const Contract& c) override { return c.difficulty < m_ability; }
-  void         accept(Contract& c) {
+  void accept(Contract& c) {
     LOG(INFO) << "Worker " << ID << " accepted contract " << c.ID;
     c.available = false;
     cooldown    = c.deadline;
@@ -44,6 +44,12 @@ class Adjudicator : public Agent {
  public:
   Adjudicator(unsigned int ID)
       : Agent(ID) {}
+
+  void accept(Contract& c) {
+    LOG(INFO) << "Adjudicator " << ID << " accepted contract " << c.ID;
+    --c.open_adjudicators;
+    cooldown = c.deadline;
+  }
 
  private:
 };
