@@ -17,7 +17,7 @@ enum LogLevel { FATAL, ERROR, WARN, INFO, DEBUG, TRACE };
 std::string_view toStr(LogLevel level);
 
 class Logger {
-  public:
+ public:
   Logger(LogLevel level, const std::filesystem::path& path, int line, const char* function);
   ~Logger();
 
@@ -39,13 +39,13 @@ class Logger {
 
   template <class T> std::ostream& operator<<(const T& msg) { return m_buffer << msg; }
 
-  private:
+ private:
   LogLevel m_level;
 
   std::ostringstream m_buffer;
 
   class Workers {
-    public:
+   public:
     static void addWorker(const std::filesystem::path& path, LogLevel level = INFO);
 
     static void setLevel(const std::filesystem::path& path, LogLevel level);
@@ -54,9 +54,9 @@ class Logger {
 
     static void log(LogLevel level, std::string_view msg);
 
-    private:
+   private:
     class Worker {
-      public:
+     public:
       Worker(LogLevel level)
           : m_level(level) {}
 
@@ -66,12 +66,12 @@ class Logger {
 
       void setLevel(LogLevel level);
 
-      protected:
+     protected:
       void logTime();
 
       void logOpeningMessage(std::string_view location);
 
-      private:
+     private:
       virtual std::ostream& stream() = 0;
 
       std::mutex m_mutex;
@@ -79,7 +79,7 @@ class Logger {
     };
 
     class ConsoleWorker : public Worker {
-      public:
+     public:
       ConsoleWorker(LogLevel level)
           : Worker(level) {
         logOpeningMessage("Console");
@@ -89,19 +89,19 @@ class Logger {
         stream() << "Closing log" << std::endl;
       }
 
-      private:
+     private:
       std::ostream& stream() override { return std::cout; }
     };
 
     class FileWorker : public Worker {
-      public:
+     public:
       FileWorker(LogLevel level, std::filesystem::path path);
       ~FileWorker() {
         logTime();
         stream() << "Closing log" << std::endl;
       }
 
-      private:
+     private:
       std::ostream& stream() override { return m_stream; }
 
       std::ofstream m_stream;

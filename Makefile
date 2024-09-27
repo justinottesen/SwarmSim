@@ -13,7 +13,7 @@ CFLAGS =
 # C++ flags
 CXXFLAGS = -std=c++20
 # C/C++ flags
-CPPFLAGS = -Wall -Wextra -Werror
+CPPFLAGS = -Wall -Wextra -Werror -Wno-unused
 # dependency-generation flags
 DEPFLAGS = -MMD -MP
 # linker flags

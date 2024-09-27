@@ -8,5 +8,5 @@ int main() {
 
   Simulator sim;
 
-  return sim.run();
+  sim.run();
 }
