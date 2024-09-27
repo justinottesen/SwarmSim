@@ -16,8 +16,8 @@ Simulator::Simulator(const Params& params)
 void Simulator::step(unsigned int t) {
   LOG(TRACE) << "Running step " << t;
 
-  // Update contracts
-  m_contractManager.updateContracts(t);
+  // Create contracts
+  m_contractManager.createContracts(t);
 
   // Workers pick up new contracts
   for (Worker& w : m_agentManager.getWorkers()) {
@@ -34,6 +34,19 @@ void Simulator::step(unsigned int t) {
     for (Contract& c : m_contractManager.getContracts()) {
       if (c.open_adjudicators == 0 || !a.shouldAccept(c)) { continue; }
       a.accept(c);
+    }
+  }
+
+  // Tally finished contract info
+  for (Contract& c : m_contractManager.getContracts()) {
+    if (c.deadline == t) {
+      if (c.available) {
+        LOG(INFO) << "Contract " << c.ID << " expired (no worker picked it up)";
+      } else if (c.open_adjudicators > 0) {
+        LOG(INFO) << "Contract " << c.ID << " expired (missing " << c.open_adjudicators << " adjudicators)";
+      } else {
+        LOG(INFO) << "Contract " << c.ID << " completed";
+      }
     }
   }
 }

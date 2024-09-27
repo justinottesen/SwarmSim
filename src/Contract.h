@@ -25,7 +25,7 @@ class ContractManager {
       , m_priceDist(params.price_dist.mean, params.price_dist.stdev)
       , m_difficultyDist(params.difficulty_dist.mean, params.difficulty_dist.stdev) {}
 
-  void updateContracts(unsigned int t) {
+  void createContracts(unsigned int t) {
     // Create new contracts
     if (m_createProb(m_rng)) {
       LOG(INFO) << "Creating new contract, ID: " << m_count;
