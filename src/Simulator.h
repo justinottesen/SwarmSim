@@ -6,6 +6,7 @@
 #include "Agent.h"
 #include "Contract.h"
 #include "Logger.h"
+#include "Metrics.h"
 
 class Simulator {
  public:
@@ -21,4 +22,5 @@ class Simulator {
 
   AgentManager    m_agentManager;
   ContractManager m_contractManager;
+  MetricManager   m_metricManager;
 };
