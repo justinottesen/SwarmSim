@@ -1,6 +1,6 @@
 #include "Logger.h"
 
-#include <sys/time.h>
+#include "TimeUtil.h"
 
 Logger::Logger(LogLevel level, const std::filesystem::path& path, int line, const char* function)
     : m_level(level) {
@@ -49,11 +49,7 @@ void Logger::Workers::Worker::setLevel(LogLevel level) {
 }
 
 void Logger::Workers::Worker::logTime() {
-  timeval tv;
-  gettimeofday(&tv, nullptr);
-  tm tm = *std::localtime(&tv.tv_sec);
-  stream() << std::put_time(&tm, "%F %T") << "." << std::setw(3) << std::setfill('0')
-           << tv.tv_usec / 1000 << " | ";
+  stream() << current_time() << " | ";
 }
 
 void Logger::Workers::Worker::logOpeningMessage(std::string_view location) {

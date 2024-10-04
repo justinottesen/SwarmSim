@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Logger.h"
+#include "TimeUtil.h"
 
 #define CASE_TO_STRING(x) \
   case x: return #x
@@ -32,6 +33,10 @@ class FrameMetrics {
 
 class MetricManager {
  public:
+  ~MetricManager() {
+    dump(std::filesystem::path("data") / program_time(true) / "frame_metrics.csv");
+  }
+  
   FrameMetrics& getFrame(unsigned int t) {
     if (t >= m_metrics.size()) { m_metrics.resize(t + 1); }
     LOG(INFO) << "GETTING FRAME " << t << ", SIZE " << m_metrics.size();

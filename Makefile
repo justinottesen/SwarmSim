@@ -88,6 +88,8 @@ clean:
 reset:
 	$(RM) -r $(OBJ)
 	$(RM) -r $(BIN)
+	$(RM) -r data
+	$(RM) -r log
 
 .PHONY: format
 format:

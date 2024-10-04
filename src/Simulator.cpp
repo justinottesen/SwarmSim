@@ -61,5 +61,4 @@ void Simulator::step(unsigned int t) {
 void Simulator::run() {
   LOG(INFO) << "Running simulation with total length " << m_params.simulation_length;
   for (unsigned int time = 0; time < m_params.simulation_length; ++time) { step(time); }
-  m_metricManager.dump("metrics/test.csv");
 }
