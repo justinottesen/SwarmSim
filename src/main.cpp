@@ -2,7 +2,7 @@
 #include "Simulator.h"
 
 int main() {
-  Logger::addConsole(TRACE);
+  Logger::addConsole(INFO);
   Logger::addFile("log/info.log");
   Logger::addFile("log/trace.log", TRACE);
 

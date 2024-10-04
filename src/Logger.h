@@ -12,7 +12,7 @@
 #define LOG(level) \
   if (true) Logger(level, __FILE__, __LINE__, __FUNCTION__)
 
-enum LogLevel { FATAL, ERROR, WARN, INFO, DEBUG, TRACE };
+enum LogLevel { CRITICAL, ERROR, WARN, INFO, DEBUG, TRACE };
 
 std::string_view toStr(LogLevel level);
 

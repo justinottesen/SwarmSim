@@ -4,8 +4,8 @@
 
 Logger::Logger(LogLevel level, const std::filesystem::path& path, int line, const char* function)
     : m_level(level) {
-  m_buffer << "(" << toStr(level) << ") - " << path.filename().c_str() << ": " << line << " "
-           << function << ": ";
+  m_buffer << "[" << toStr(level) << "] " << path.filename().c_str() << ":" << line << " in "
+           << function << "(): ";
 }
 
 Logger::~Logger() { Workers::log(m_level, m_buffer.str()); }
@@ -76,11 +76,11 @@ Logger::Workers::FileWorker::FileWorker(LogLevel level, std::filesystem::path pa
 
 std::string_view toStr(LogLevel level) {
   switch (level) {
-    case FATAL: return "FATAL";
-    case ERROR: return "ERROR";
-    case WARN:  return "WARN";
-    case INFO:  return "INFO";
-    case DEBUG: return "DEBUG";
-    case TRACE: return "TRACE";
+    case CRITICAL: return "CRITICAL";
+    case ERROR:    return "   ERROR";
+    case WARN:     return "    WARN";
+    case INFO:     return "    INFO";
+    case DEBUG:    return "   DEBUG";
+    case TRACE:    return "   TRACE";
   }
 }

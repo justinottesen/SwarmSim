@@ -43,7 +43,8 @@ void Simulator::step(unsigned int t) {
       if (c.available) {
         LOG(INFO) << "Contract " << c.ID << " expired (no worker picked it up)";
       } else if (c.open_adjudicators > 0) {
-        LOG(INFO) << "Contract " << c.ID << " expired (missing " << c.open_adjudicators << " adjudicators)";
+        LOG(INFO) << "Contract " << c.ID << " expired (missing " << c.open_adjudicators
+                  << " adjudicators)";
       } else {
         LOG(INFO) << "Contract " << c.ID << " completed";
       }
