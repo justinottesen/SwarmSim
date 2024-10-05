@@ -4,7 +4,7 @@
 
 Logger::Logger(LogLevel level, const std::filesystem::path& path, int line, const char* function)
     : m_level(level) {
-  m_buffer << "[" << toStr(level) << "] " << path.filename().c_str() << ":" << line << " in "
+  m_buffer << "[" << std::setw(8) << toStr(level) << "] " << path.filename().c_str() << ":" << line << " in "
            << function << "(): ";
 }
 
@@ -38,7 +38,7 @@ void Logger::Workers::Worker::log(LogLevel level, std::string_view msg) {
   std::lock_guard<std::mutex> lock(m_mutex);
   if (level > m_level) { return; }
   logTime();
-  stream() << msg << std::endl;
+  stream() << log_color(level) << msg << reset_color() << std::endl;
 }
 
 void Logger::Workers::Worker::setLevel(LogLevel level) {
@@ -73,10 +73,21 @@ Logger::Workers::FileWorker::FileWorker(LogLevel level, std::filesystem::path pa
 std::string_view toStr(LogLevel level) {
   switch (level) {
     case CRITICAL: return "CRITICAL";
-    case ERROR:    return "   ERROR";
-    case WARN:     return "    WARN";
-    case INFO:     return "    INFO";
-    case DEBUG:    return "   DEBUG";
-    case TRACE:    return "   TRACE";
+    case ERROR:    return "ERROR";
+    case WARN:     return "WARN";
+    case INFO:     return "INFO";
+    case DEBUG:    return "DEBUG";
+    case TRACE:    return "TRACE";
+  }
+}
+
+std::string_view Logger::Workers::ConsoleWorker::log_color(LogLevel level) {
+  switch (level) {
+    case CRITICAL: return "\033[31;1m";
+    case ERROR:    return "\033[31m";
+    case WARN:     return "\033[33m";
+    case INFO:     return "";
+    case DEBUG:    return "\033[2m";
+    case TRACE:    return "\033[2;3m"; 
   }
 }

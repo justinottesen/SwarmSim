@@ -74,6 +74,9 @@ class Logger {
      private:
       virtual std::ostream& stream() = 0;
 
+      virtual std::string_view log_color(LogLevel) { return ""; }
+      virtual std::string_view reset_color() { return ""; }
+
       std::mutex m_mutex;
       LogLevel   m_level;
     };
@@ -91,6 +94,9 @@ class Logger {
 
      private:
       std::ostream& stream() override { return std::cout; }
+
+      std::string_view log_color(LogLevel level) override;
+      std::string_view reset_color() override { return "\033[0m"; }
     };
 
     class FileWorker : public Worker {
