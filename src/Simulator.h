@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Agent.h"
+#include "Config.h"
 #include "Contract.h"
 #include "Logger.h"
 #include "Metrics.h"
@@ -23,4 +24,5 @@ class Simulator {
   AgentManager    m_agentManager;
   ContractManager m_contractManager;
   MetricManager   m_metricManager;
+  ConfigManager   m_configManager;
 };

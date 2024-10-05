@@ -1,8 +1,8 @@
+#include <exception>
+
 #include "Logger.h"
 #include "Simulator.h"
-
 #include "TimeUtil.h"
-#include <exception>
 
 int main() {
   Logger::addConsole(INFO);

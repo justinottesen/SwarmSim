@@ -4,8 +4,8 @@
 
 Logger::Logger(LogLevel level, const std::filesystem::path& path, int line, const char* function)
     : m_level(level) {
-  m_buffer << "[" << std::setw(8) << toStr(level) << "] " << path.filename().c_str() << ":" << line << " in "
-           << function << "(): ";
+  m_buffer << "[" << std::setw(8) << toStr(level) << "] " << path.filename().c_str() << ":" << line
+           << " in " << function << "(): ";
 }
 
 Logger::~Logger() { Workers::log(m_level, m_buffer.str()); }
@@ -48,9 +48,7 @@ void Logger::Workers::Worker::setLevel(LogLevel level) {
   m_level = level;
 }
 
-void Logger::Workers::Worker::logTime() {
-  stream() << current_time() << " | ";
-}
+void Logger::Workers::Worker::logTime() { stream() << current_time() << " | "; }
 
 void Logger::Workers::Worker::logOpeningMessage(std::string_view location) {
   stream() << std::string(25, '-') << std::endl;
@@ -88,6 +86,6 @@ std::string_view Logger::Workers::ConsoleWorker::log_color(LogLevel level) {
     case WARN:     return "\033[33m";
     case INFO:     return "";
     case DEBUG:    return "\033[2m";
-    case TRACE:    return "\033[2;3m"; 
+    case TRACE:    return "\033[2;3m";
   }
 }

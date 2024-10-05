@@ -36,7 +36,7 @@ class MetricManager {
   ~MetricManager() {
     dump(std::filesystem::path("data") / program_time(true) / "frame_metrics.csv");
   }
-  
+
   FrameMetrics& getFrame(unsigned int t) {
     if (t >= m_metrics.size()) { m_metrics.resize(t + 1); }
     LOG(INFO) << "GETTING FRAME " << t << ", SIZE " << m_metrics.size();
