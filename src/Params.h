@@ -5,7 +5,15 @@
 struct NormalDist {
   double mean;
   double stdev;
+
+  operator std::normal_distribution<double>() const { return std::normal_distribution{mean, stdev}; }
 };
+
+
+inline std::ostream& operator<<(std::ostream& ostr, const NormalDist& nd) {
+  ostr << "N(" << nd.mean << ", " << nd.stdev << "^2)";
+  return ostr;
+}
 
 struct ContractParams {
   double       creation_prob = 0.5;

@@ -37,31 +37,28 @@ std::ostream& operator<<(std::ostream& ostr, const NamedValue<Name, ValueType, D
   return ostr;
 }
 
-inline std::ostream& operator<<(std::ostream& ostr, const NormalDist& nd) {
-  ostr << "N(" << nd.mean << ", " << nd.stdev << "^2)";
-  return ostr;
-}
+using SimulationConfig = std::tuple<NamedValue<"simulation_length", unsigned int, 60>,
+                                    NamedValue<"rng_seed", unsigned int>>;
+using ContractConfig =
+    std::tuple<NamedValue<"creation_probability", std::ratio<1, 2>>,
+               NamedValue<"price_distribution", NormalDist, NormalDist(10, 1)>,
+               NamedValue<"difficulty_distribution", NormalDist, NormalDist(1, 0.1)>,
+               NamedValue<"adjudicators_per_contract", unsigned int, 3>,
+               NamedValue<"collateral_ratio", std::ratio<1, 1>>,
+               NamedValue<"duration", unsigned int, 10>>;
+using AgentConfig = std::tuple<NamedValue<"num_workers", unsigned int, 10>,
+                               NamedValue<"ability_distribution", NormalDist, NormalDist(1, 0.1)>,
+                               NamedValue<"num_ajdudicators", unsigned int, 10>>;
 
 class ConfigManager {
  public:
   ~ConfigManager() { dump(std::filesystem::path("data") / program_time(true) / "config.json"); }
 
-  using SimulationConfig = std::tuple<NamedValue<"simulation_length", unsigned int, 60>,
-                                      NamedValue<"rng_seed", unsigned int>>;
-  using ContractConfig =
-      std::tuple<NamedValue<"creation_probability", std::ratio<1, 2>>,
-                 NamedValue<"price_distribution", NormalDist, NormalDist(10, 1)>,
-                 NamedValue<"difficulty_distribution", NormalDist, NormalDist(1, 0.1)>,
-                 NamedValue<"adjudicators_per_contract", unsigned int, 3>,
-                 NamedValue<"collateral_ratio", std::ratio<1, 1>>,
-                 NamedValue<"duration", unsigned int, 10>>;
-  using AgentConfig = std::tuple<NamedValue<"num_workers", unsigned int, 10>,
-                                 NamedValue<"ability_distribution", NormalDist, NormalDist(1, 0.1)>,
-                                 NamedValue<"num_ajdudicators", unsigned int, 10>>;
-
-  SimulationConfig simulation;
-  ContractConfig   contract;
-  AgentConfig      agent;
+  template <typename ConfigType, typename T>
+  const T& get(std::string_view name) const {
+    const ConfigType& config = std::get<ConfigType>(m_configs);
+    return find<T>(config, name);
+  }
 
   void dump(const std::filesystem::path& path) const {
     LOG(INFO) << "Dumping config to path " << path;
@@ -76,35 +73,63 @@ class ConfigManager {
     json_file << "{\n"
               << "  \"simulation\": {\n";
     std::apply(
-        [&](const auto&... param) {
+        [&](const auto&... val) {
           unsigned int n = 0;
-          ((json_file << "    " << param
+          ((json_file << "    " << val
                       << (++n != std::tuple_size<SimulationConfig>() ? ",\n" : "\n")),
            ...);
         },
-        simulation);
+        std::get<SimulationConfig>(m_configs));
     json_file << "  }\n"
               << "  \"contract\": {\n";
     std::apply(
-        [&](const auto&... param) {
+        [&](const auto&... val) {
           unsigned int n = 0;
-          ((json_file << "    " << param
+          ((json_file << "    " << val
                       << (++n != std::tuple_size<ContractConfig>() ? ",\n" : "\n")),
            ...);
         },
-        contract);
+        std::get<ContractConfig>(m_configs));
     json_file << "  }\n"
               << "  \"agent\": {\n";
     std::apply(
-        [&](const auto&... param) {
+        [&](const auto&... val) {
           unsigned int n = 0;
-          ((json_file << "    " << param
-                      << (++n != std::tuple_size<AgentConfig>() ? ",\n" : "\n")),
+          ((json_file << "    " << val << (++n != std::tuple_size<AgentConfig>() ? ",\n" : "\n")),
            ...);
         },
-        agent);
+        std::get<AgentConfig>(m_configs));
     json_file << "  }\n"
               << "}\n";
   }
+
+ private:
+  template <typename T, unsigned int I = 0, typename... Tp>
+  const T& find(const std::tuple<Tp...>& tup, std::string_view name) const {
+    if (std::get<I>(tup).name == name) {
+      return std::get<I>(tup).value;
+    }
+    if constexpr(I + 1 != sizeof...(Tp)) {
+      return find<T, I+1>(tup, name);
+    }
+    LOG(CRITICAL) << name << " not found in config";
+    throw std::invalid_argument(std::string(name) + " not found in config");
+  }
+
+  std::tuple<SimulationConfig, ContractConfig, AgentConfig> m_configs;
+};
+
+template <typename ConfigType> class ConfigView {
+ public:
+  ConfigView(const ConfigManager& manager)
+      : m_manager(manager) {}
+
+  template <typename T>
+  const T& get(std::string_view name) const {
+    return m_manager.get<ConfigType, T>(name);
+  }
+
+ private:
+  const ConfigManager& m_manager;
 };
 

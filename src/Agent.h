@@ -4,6 +4,7 @@
 
 #include "Contract.h"
 #include "Params.h"
+#include "Config.h"
 
 class Agent {
  public:
@@ -56,7 +57,7 @@ class Adjudicator : public Agent {
 
 class AgentManager {
  public:
-  AgentManager(const AgentParams& params, std::mt19937& rng);
+  AgentManager(const ConfigView<AgentConfig>&& config, std::mt19937& rng);
 
   std::vector<Worker>&      getWorkers() { return m_workers; }
   std::vector<Adjudicator>& getAdjudicators() { return m_adjudicators; }
@@ -64,7 +65,7 @@ class AgentManager {
  private:
   unsigned int m_count = 0;
 
-  AgentParams m_params;
+  ConfigView<AgentConfig> m_config;
 
   std::mt19937& m_rng;
 

@@ -2,18 +2,18 @@
 
 #include "Logger.h"
 
-AgentManager::AgentManager(const AgentParams& params, std::mt19937& rng)
-    : m_params(params)
+AgentManager::AgentManager(const ConfigView<AgentConfig>&& config, std::mt19937& rng)
+    : m_config(config)
     , m_rng(rng)
-    , m_abilityDist(params.ability_dist.mean, params.ability_dist.stdev) {
-  LOG(INFO) << "Initializing " << params.num_workers << " workers";
-  while (m_count < params.num_workers) {
+    , m_abilityDist(config.get<NormalDist>("ability_distribution")) {
+  LOG(INFO) << "Initializing " << config.get<unsigned int>("num_workers") << " workers";
+  while (m_count < config.get<unsigned int>("num_workers")) {
     LOG(TRACE) << "Adding worker with ID " << m_count;
     m_workers.emplace_back(m_count++, m_abilityDist(rng));
   }
 
-  LOG(INFO) << "Initializing " << params.num_adjudicators << " adjudicators";
-  while (m_count < params.num_adjudicators + params.num_workers) {
+  LOG(INFO) << "Initializing " << config.get<unsigned int>("num_adjudicators") << " adjudicators";
+  while (m_count < config.get<unsigned int>("num_adjudicators") + config.get<unsigned int>("num_workers")) {
     LOG(TRACE) << "Adding adjudicator with ID " << m_count;
     m_adjudicators.emplace_back(m_count++);
   }

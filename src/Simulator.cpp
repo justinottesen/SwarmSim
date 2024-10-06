@@ -3,14 +3,15 @@
 #include <functional>
 #include <ranges>
 
-Simulator::Simulator(const Params& params)
-    : m_params(params)
-    , m_rng(params.rng_seed)
-    , m_agentManager(params.agent, m_rng)
-    , m_contractManager(params.contract, m_rng, m_metricManager) {
+Simulator::Simulator()
+    : m_configManager()
+    , m_config(m_configManager)
+    , m_rng(m_config.get<unsigned int>("rng_seed"))
+    , m_agentManager(ConfigView<AgentConfig>(m_configManager), m_rng)
+    , m_contractManager(ConfigView<ContractConfig>(m_configManager), m_rng, m_metricManager) {
   LOG(INFO) << "Initializing simulation";
 
-  LOG(TRACE) << "Seeded rng with value " << params.rng_seed;
+  LOG(TRACE) << "Seeded rng with value " << m_config.get<unsigned int>("rng_seed");
 }
 
 void Simulator::step(unsigned int t) {
@@ -59,6 +60,6 @@ void Simulator::step(unsigned int t) {
 }
 
 void Simulator::run() {
-  LOG(INFO) << "Running simulation with total length " << m_params.simulation_length;
-  for (unsigned int time = 0; time < m_params.simulation_length; ++time) { step(time); }
+  LOG(INFO) << "Running simulation with total length " << m_config.get<unsigned int>("simulation_length");
+  for (unsigned int time = 0; time < m_config.get<unsigned int>("simulation_length"); ++time) { step(time); }
 }

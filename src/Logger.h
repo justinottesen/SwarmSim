@@ -37,7 +37,7 @@ class Logger {
 
   static void removeConsole() { Workers::removeWorker(""); }
 
-  template <class T> std::ostream& operator<<(const T& msg) { return m_buffer << msg; }
+  template <typename T> std::ostream& operator<<(const T& msg) { return m_buffer << msg; }
 
  private:
   LogLevel m_level;
