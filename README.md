@@ -1,6 +1,11 @@
 # Swarm Contract Simulator
 The goal of this project is to build a general purpose simulator to model swarm contracts and test different parameters. This general model can be applied to specific situations and job types, being made more complex for these, but this is the most basic instructions.
 
+Some key desired properties for the simulator are:
+- **Generality**: This simulator should be abstracted away from any specific task so that the principles can be applied to any specific task
+- **Autonomy**: There will be no extrinsic motivation or external driving forces required. All participants will act in order to maximize their profit.
+- **Reality**: No participant will know the future. For example, a worker will estimate the cost of completing the job, however it will not know the true cost ahead of time.
+
 ## System Model
 ### Participants
 All participants are solely motivated by profit. They will take whatever actions they believe will maximize profit. There are three main types of participants:

@@ -5,7 +5,7 @@
 #include <exception>
 
 int main() {
-  Logger::addConsole(INFO);
+  Logger::addConsole(DEBUG);
   Logger::addFile("log/info.log");
   Logger::addFile("log/trace.log", TRACE);
 

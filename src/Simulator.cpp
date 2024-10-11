@@ -14,7 +14,7 @@ Simulator::Simulator(const Params& params)
 }
 
 void Simulator::step(unsigned int t) {
-  LOG(INFO) << "Running step " << t;
+  LOG(DEBUG) << "Running step " << t;
   FrameMetrics& metrics = m_metricManager.getFrame(t);
 
   // Create contracts
