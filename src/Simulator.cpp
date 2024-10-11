@@ -25,6 +25,7 @@ void Simulator::step(unsigned int t) {
     if (w.working(t)) { continue; }
     for (Contract& c : m_contractManager.getContracts()) {
       if (!c.available || !w.shouldAccept(c)) { continue; }
+      metrics.increment(FrameMetrics::CONTRACTS_ACCEPTED_WORKER);
       w.accept(c);
       break;
     }
@@ -35,6 +36,7 @@ void Simulator::step(unsigned int t) {
     if (a.working(t)) { continue; }
     for (Contract& c : m_contractManager.getContracts()) {
       if (c.open_adjudicators == 0 || !a.shouldAccept(c)) { continue; }
+      metrics.increment(FrameMetrics::CONTRACTS_ACCEPTED_ADJUDICATOR);
       a.accept(c);
       break;
     }

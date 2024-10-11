@@ -11,14 +11,16 @@
 
 class FrameMetrics {
  public:
-  enum Type { CONTRACTS_CREATED, CONTRACTS_EXPIRED, CONTRACTS_COMPLETED, NUM_TYPES };
+  enum Type { CONTRACTS_CREATED, CONTRACTS_EXPIRED, CONTRACTS_COMPLETED, CONTRACTS_ACCEPTED_WORKER, CONTRACTS_ACCEPTED_ADJUDICATOR, NUM_TYPES };
 
   static std::string_view toStr(Type t) {
     switch (t) {
       CASE_TO_STRING(CONTRACTS_CREATED);
       CASE_TO_STRING(CONTRACTS_EXPIRED);
       CASE_TO_STRING(CONTRACTS_COMPLETED);
-      default: return "";
+      CASE_TO_STRING(CONTRACTS_ACCEPTED_WORKER);
+      CASE_TO_STRING(CONTRACTS_ACCEPTED_ADJUDICATOR);
+      case NUM_TYPES: return "";
     }
   }
 
@@ -39,7 +41,6 @@ class MetricManager {
   
   FrameMetrics& getFrame(unsigned int t) {
     if (t >= m_metrics.size()) { m_metrics.resize(t + 1); }
-    LOG(INFO) << "GETTING FRAME " << t << ", SIZE " << m_metrics.size();
     return m_metrics[t];
   }
 
